@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<GridPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.ewanl.cw255.PhotoshopController">
+   <padding>
+      <Insets bottom="25" left="25" right="25" top="25" />
+   </padding>
+   <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+   <VBox alignment="TOP_CENTER" spacing="20.0" GridPane.columnIndex="0">
+      <Label text="FX" />
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Gamma">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Text>
+            <Slider majorTickUnit="1" max="3" minHeight="200.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" value="1" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1" textAlignment="CENTER" />
+         </VBox>
+         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Scale">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Text>
+            <Slider majorTickUnit="1" max="3" minHeight="200.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" value="1" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1" textAlignment="CENTER" />
+         </VBox>
+      </HBox>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Interpolation" />
+      <RadioButton fx:id="btnNearestNeighbour" mnemonicParsing="false" selected="true" text="Nearest Neighbour">
+         <toggleGroup>
+            <ToggleGroup fx:id="interpolation" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton mnemonicParsing="false" stylesheets="@style.css" text="Other one" toggleGroup="$interpolation">
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+      </RadioButton>
+      <padding>
+         <Insets top="20.0" />
+      </padding>
+   </VBox>
+   <ImageView pickOnBounds="true" GridPane.columnIndex="1">
+      <image>
+         <Image url="@raytrace.jpg" />
+      </image></ImageView>
+</GridPane>
