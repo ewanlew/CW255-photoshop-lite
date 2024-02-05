@@ -3,6 +3,7 @@ package me.ewanl.cw255;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ChangeListener;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Separator;
 import javafx.scene.control.CheckBox;
@@ -18,6 +19,7 @@ import javafx.scene.paint.Color;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
@@ -29,8 +31,11 @@ public class Photoshop extends Application {
         launch(args);
     }
 
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("Mark's CS-256 application");
+    public void start(Stage primaryStage) throws IOException {
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("photoshop-view.fxml"));
+//        Scene scene = new Scene (fxmlLoader.load(), 600, 400);
+        primaryStage.setTitle("Photoshop Lite");
 
         // Create an ImageView
         imageView = new ImageView();
