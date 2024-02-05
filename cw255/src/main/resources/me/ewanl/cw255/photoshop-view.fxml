@@ -12,9 +12,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 
-<GridPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.ewanl.cw255.PhotoshopController">
+<GridPane hgap="25.0" styleClass="pane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.ewanl.cw255.PhotoshopController">
    <padding>
       <Insets bottom="25" left="25" right="25" top="25" />
    </padding>
@@ -25,41 +24,33 @@
    <rowConstraints>
       <RowConstraints />
    </rowConstraints>
-   <VBox alignment="TOP_CENTER" spacing="20.0" GridPane.columnIndex="0">
-      <Label text="FX" />
+   <VBox alignment="TOP_CENTER" spacing="20.0" styleClass="vbox" GridPane.columnIndex="0">
+      <Label styleClass="title" text="FX Controls" />
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Gamma">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </Text>
-            <Slider majorTickUnit="1" max="3" minHeight="200.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" value="1" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1" textAlignment="CENTER" />
+            <Label styleClass="general-text" text="Gamma" />
+            <Slider majorTickUnit="1" max="3" minHeight="300.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" value="1" />
+            <Label fx:id="lblGammaValue" text="1" />
          </VBox>
          <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Scale">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </Text>
-            <Slider majorTickUnit="1" max="3" minHeight="200.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" value="1" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1" textAlignment="CENTER" />
+            <Label styleClass="general-text" text="Scale" />
+            <Slider majorTickUnit="1" max="3" minHeight="300.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" value="1" />
+            <Label text="1" />
          </VBox>
       </HBox>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Interpolation" />
-      <RadioButton fx:id="btnNearestNeighbour" mnemonicParsing="false" selected="true" text="Nearest Neighbour">
+      <Label styleClass="title" text="Interpolation" />
+      <RadioButton fx:id="btnNearestNeighbour" mnemonicParsing="false" selected="true" styleClass="general-text" text="Nearest Neighbour">
          <toggleGroup>
             <ToggleGroup fx:id="interpolation" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton mnemonicParsing="false" stylesheets="@style.css" text="Other one" toggleGroup="$interpolation">
+      <RadioButton mnemonicParsing="false" styleClass="general-text" stylesheets="@style.css" text="Other one" toggleGroup="$interpolation">
          <VBox.margin>
             <Insets top="-10.0" />
          </VBox.margin>
       </RadioButton>
       <padding>
-         <Insets top="20.0" />
+         <Insets bottom="20.0" top="20.0" />
       </padding>
    </VBox>
    <ImageView pickOnBounds="true" GridPane.columnIndex="1">

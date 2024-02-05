@@ -1,3 +1,29 @@
 .pane {
-    -fx-background-color: Black
+    -fx-background-color: #0d0c0c;
+}
+
+.vbox {
+    -fx-background-radius: 20px;
+    -fx-background-color: #1a1717;
+
+
+    -fx-border-radius: 20px;
+
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0)
+}
+
+.title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #fcf0f0;
+}
+
+.general-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #fcf0f0
+}
+
+.slider-text {
+    -fx-tick-label-font: "Courier New";
+    -fx-tick-label-fill: #fcf0f0
 }
