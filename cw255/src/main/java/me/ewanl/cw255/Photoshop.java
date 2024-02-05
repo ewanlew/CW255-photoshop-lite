@@ -18,6 +18,8 @@ import javafx.scene.paint.Color;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Objects;
 
 public class Photoshop extends Application {
 
@@ -35,9 +37,9 @@ public class Photoshop extends Application {
 
         // Load the image from a file
         try {
-            originalImage = new Image(new FileInputStream("raytrace.jpg"));
+            originalImage = new Image(getClass().getResourceAsStream("raytrace.jpg"));
             imageView.setImage(originalImage);
-        } catch (FileNotFoundException e) {
+        } catch (NullPointerException e) {
             System.out.println(">>>The image could not be located in directory: "+System.getProperty("user.dir")+"<<<");
             System.exit(-1);
         }
