@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Slider?>
@@ -24,37 +26,46 @@
    <rowConstraints>
       <RowConstraints />
    </rowConstraints>
-   <VBox alignment="TOP_CENTER" spacing="20.0" styleClass="vbox" GridPane.columnIndex="0">
+   <VBox alignment="TOP_CENTER" prefHeight="649.0" prefWidth="204.0" spacing="20.0" styleClass="vbox" GridPane.columnIndex="0">
       <Label styleClass="title" text="FX Controls" />
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
             <Label styleClass="general-text" text="Gamma" />
-            <Slider majorTickUnit="1" max="3" minHeight="300.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" value="1" />
-            <Label fx:id="lblGammaValue" text="1" />
+            <Slider fx:id="sldGamma" majorTickUnit="1" max="3" minHeight="300.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" styleClass="slider-text" value="1" />
+            <Label fx:id="lblGammaValue" styleClass="slider-text" text="1" />
          </VBox>
-         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
             <Label styleClass="general-text" text="Scale" />
-            <Slider majorTickUnit="1" max="3" minHeight="300.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" value="1" />
-            <Label text="1" />
+            <Slider fx:id="sldScale" majorTickUnit="1" max="3" minHeight="300.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" styleClass="slider-text" value="1" />
+            <Label fx:id="lblScaleValue" styleClass="slider-text" text="1" />
          </VBox>
       </HBox>
       <Label styleClass="title" text="Interpolation" />
-      <RadioButton fx:id="btnNearestNeighbour" mnemonicParsing="false" selected="true" styleClass="general-text" text="Nearest Neighbour">
+      <RadioButton fx:id="rdoBilinear" mnemonicParsing="false" selected="true" styleClass="general-text" text="Bilinear">
          <toggleGroup>
             <ToggleGroup fx:id="interpolation" />
          </toggleGroup>
-      </RadioButton>
-      <RadioButton mnemonicParsing="false" styleClass="general-text" stylesheets="@style.css" text="Other one" toggleGroup="$interpolation">
          <VBox.margin>
             <Insets top="-10.0" />
          </VBox.margin>
       </RadioButton>
+      <RadioButton fx:id="rdoNearestNeighbour" mnemonicParsing="false" styleClass="general-text" stylesheets="@style.css" text="Nearest Neighbour" toggleGroup="$interpolation">
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+      </RadioButton>
+      <Label styleClass="title" text="Cross Correlation" />
+      <CheckBox fx:id="chkCrossCorrelation" mnemonicParsing="false" styleClass="general-text" text="Enabled">
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+      </CheckBox>
+      <Button fx:id="btnReset" mnemonicParsing="false" text="Reset" />
       <padding>
          <Insets bottom="20.0" top="20.0" />
       </padding>
    </VBox>
-   <ImageView pickOnBounds="true" GridPane.columnIndex="1">
-      <image>
-         <Image url="@raytrace.jpg" />
-      </image></ImageView>
+   <ImageView fx:id="imgView" pickOnBounds="true" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+      <Image url="@raytrace.jpg" />
+   </ImageView>
 </GridPane>

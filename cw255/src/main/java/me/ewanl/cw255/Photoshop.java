@@ -26,65 +26,13 @@ public class Photoshop extends Application {
 
     public void start(Stage primaryStage) throws IOException {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("photoshop-view.fxml"));
-//        Scene scene = new Scene (fxmlLoader.load(), 600, 400);
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("photoshop-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 1920, 1080);
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+        primaryStage.setResizable(false);
         primaryStage.setTitle("Photoshop Lite");
-
-        // Create an ImageView
-        imageView = new ImageView();
-
-        // Load the image from a file
-        try {
-            originalImage = new Image(getClass().getResourceAsStream("raytrace.jpg"));
-            imageView.setImage(originalImage);
-        } catch (NullPointerException e) {
-            System.out.println(">>>The image could not be located in directory: "+System.getProperty("user.dir")+"<<<");
-            System.exit(-1);
-        }
-
-        // Create a Slider for gamma correction
-        Slider gammaSlider = new Slider(0.1, 3.0, 1.0);
-
-        // Create a Label to display the current gamma value
-        Label gammaLabel = new Label("Gamma: " + gammaSlider.getValue());
-
-        // Add a listener to update the image with gamma correction when the slider is changed
-        gammaSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            double gammaValue = newValue.doubleValue();
-            gammaLabel.setText("Gamma: " + gammaValue);
-
-            // Apply gamma correction to the image and update the ImageView
-            Image correctedImage = applyGammaCorrection(originalImage, gammaValue);
-            imageView.setImage(correctedImage);
-        });
-
-        Slider resizeSlider = new Slider(0.1, 2.0, 1.0);
-        Label resizeLabel = new Label("Resize: " + resizeSlider.getValue());
-
-        CheckBox nn = new CheckBox("Nearest neighbour interpolation");
-        nn.setSelected(false);
-
-        // Add a listener to update the image with resizing when the slider is changed
-        resizeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            double resizeValue = newValue.doubleValue();
-            resizeLabel.setText("Resize: " + resizeValue);
-
-        });
-
-        Separator separator1 = new Separator();
-        Separator separator2 = new Separator();
-        Separator separator3 = new Separator();
-
-        // Create a VBox to hold the components
-        VBox vbox = new VBox(gammaSlider, gammaLabel, separator1, resizeSlider, resizeLabel, separator2, nn, separator3, imageView);
-
-        // Create a scene with the VBox
-        Scene scene = new Scene(vbox, 400, 600);
-
-        // Set the scene to the stage
+        primaryStage.getIcons().add(new Image("file:icon.png"));
         primaryStage.setScene(scene);
-
-        // Show the stage
         primaryStage.show();
     }
 

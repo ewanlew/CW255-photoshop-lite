@@ -17,6 +17,9 @@ public class HelloApplication extends Application {
         stage.setTitle("Photoshop Lite");
         stage.setScene(scene);
         stage.show();
+
+        //Image correctedImage = applyGammaCorrection(originalImage, gammaValue);
+        //imageView.setImage(correctedImage);
     }
 
     public static void main(String[] args) {

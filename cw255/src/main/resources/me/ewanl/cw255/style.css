@@ -8,6 +8,8 @@
 
 
     -fx-border-radius: 20px;
+    -fx-border-width: 2px;
+    -fx-border-color: #ffd4d4;
 
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0)
 }
@@ -16,6 +18,7 @@
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: #fcf0f0;
+    -fx-underline: true
 }
 
 .general-text {
@@ -23,7 +26,31 @@
     -fx-text-fill: #fcf0f0
 }
 
+.slider .track {
+    -fx-background-color: #ffd4d4;
+    -fx-pref-width: 5px;
+}
+
+.slider .thumb {
+    -fx-background-color: #fcf0f0;
+    -fx-pref-width: 20px;
+    -fx-pref-height: 7px;
+}
+
 .slider-text {
-    -fx-tick-label-font: "Courier New";
-    -fx-tick-label-fill: #fcf0f0
+    -fx-tick-label-font-family: "Courier New";
+    -fx-tick-label-font-fill: #fcf0f0;
+    -fx-font-family: "Courier New";
+    -fx-text-fill: fcf0f0;
+}
+
+.button {
+    -fx-background-color: transparent;
+    -fx-border-color: #ffd4d4;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+
+
+    -fx-text-fill: #ffd4d4;
+    -fx-font-size: 14px;
 }
