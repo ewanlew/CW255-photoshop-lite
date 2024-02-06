@@ -83,12 +83,27 @@ public class PhotoshopController {
             lblGammaValue.setText(df.format(gammaVal));
 
             Photoshop.setGammaLUT(gammaVal);
-            imgView.setImage(Photoshop.gammaCorrect(originalImage));
+
+            if (sldScale.getValue() == 1){
+                imgView.setImage(Photoshop.gammaCorrect(originalImage));
+            } else{
+                imgView.setImage(Photoshop.resizeImage(Photoshop.gammaCorrect(originalImage),
+                        sldScale.getValue(), rdoNearestNeighbour.isSelected()));
+            }
+
         });
 
         sldScale.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             double scaleVal = newVal.doubleValue();
             lblScaleValue.setText(df.format(scaleVal));
+
+            if (sldGamma.getValue() == 1){
+                imgView.setImage(Photoshop.resizeImage(originalImage,
+                        scaleVal, rdoNearestNeighbour.isSelected()));
+            } else{
+                imgView.setImage(Photoshop.resizeImage(Photoshop.gammaCorrect(originalImage),
+                        sldScale.getValue(), rdoNearestNeighbour.isSelected()));
+            }
 
 
         });

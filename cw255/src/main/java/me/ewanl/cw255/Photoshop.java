@@ -6,15 +6,13 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class Photoshop extends Application {
-
-    private Image originalImage;
-    private ImageView imageView;
     private static double[] gammaLUT = new double[256];
 
     public static void main(String[] args) {
@@ -26,7 +24,6 @@ public class Photoshop extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Photoshop.class.getResource("photoshop-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1920, 1080);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-        primaryStage.setResizable(false);
         primaryStage.setTitle("Photoshop Lite");
         primaryStage.getIcons().add(new Image("file:icon.png"));
         primaryStage.setScene(scene);
@@ -51,7 +48,7 @@ public class Photoshop extends Application {
         int newHeight = (int) originalImage.getHeight();
         
         // Create a new WritableImage
-        javafx.scene.image.WritableImage gammaCorrectedImage = new javafx.scene.image.WritableImage(newWidth, newHeight);
+        WritableImage gammaCorrectedImage = new WritableImage(newWidth, newHeight);
         PixelWriter writeableImage = gammaCorrectedImage.getPixelWriter();
 
         Color colour;
@@ -71,7 +68,37 @@ public class Photoshop extends Application {
         return gammaCorrectedImage;
     }
 
+    public static Image resizeImage(Image imageToChange, double resizeScale, boolean nn){
+        int newWidth = (int) ((double) imageToChange.getWidth()*resizeScale);
+        int newHeight = (int) ((double) imageToChange.getHeight()*resizeScale);
 
+        // Create a new WritableImage
+        WritableImage resizedImage = new WritableImage(newWidth, newHeight);
+        PixelWriter writeableImage = resizedImage.getPixelWriter();
+
+        Color colour;
+
+        for (int j=0; j < newHeight; j++) {
+            for (int i=0; i < newWidth; i++) {
+                double x = (double) imageToChange.getWidth()* (double) i / (double) newWidth;
+                double y = (double) imageToChange.getHeight()* (double) j / (double) newHeight;
+
+                int ix = (int) x;
+                int iy = (int) y;
+
+                colour = imageToChange.getPixelReader().getColor(ix, iy);
+                writeableImage.setColor(i, j, colour);
+
+
+            }
+
+
+        }
+
+
+
+        return resizedImage;
+    }
 
 
 }
