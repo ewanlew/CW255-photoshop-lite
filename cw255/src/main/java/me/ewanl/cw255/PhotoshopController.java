@@ -81,16 +81,19 @@ public class PhotoshopController {
         sldGamma.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             double gammaVal = newVal.doubleValue();
             lblGammaValue.setText(df.format(gammaVal));
+
+            Photoshop.setGammaLUT(gammaVal);
+            imgView.setImage(Photoshop.gammaCorrect(originalImage));
         });
 
         sldScale.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             double scaleVal = newVal.doubleValue();
             lblScaleValue.setText(df.format(scaleVal));
+
+
         });
 
         btnReset.setOnAction(event -> reset());
-
-
     }
 
     private void reset(){
