@@ -19,6 +19,13 @@ public class Photoshop extends Application {
      */
     private static double[] gammaLUT = new double[256];
 
+    private static final int[][] laplacianMatrix =
+                    { {-4, -1, 0, -1, -4},
+                    {-1, 2, 3, 2, -1},
+                    {0, 3, 4, 3, 0},
+                    {-1, 2, 3, 2, -1},
+                    {-4, -1, 0, -1, -4}};
+
     /**
      * Main method to start application
      * @param args args
@@ -135,5 +142,57 @@ public class Photoshop extends Application {
         return resizedImage;
     }
 
+    public static Image applyLaplace(Image imageToChange) {
+        int newWidth = (int) imageToChange.getWidth();
+        int newHeight = (int) imageToChange.getHeight();
+
+        WritableImage filteredImage = new WritableImage(newWidth, newHeight);
+        PixelWriter writeableImage = filteredImage.getPixelWriter();
+
+        for (int j = 2; j < newHeight - 2 ; j++){
+            for (int i = 2; i < newWidth - 2; i++){
+                Color[][] colorMatrix = getColourMatrix(imageToChange);
+                Color newColor = getAdjustedColour(colorMatrix);
+
+
+                writeableImage.setColor(i, j, newColor);
+
+            }
+        }
+
+        return filteredImage;
+    }
+
+    private static Color[][] getColourMatrix(Image image){
+        Color[][] colourMatrix = new Color[5][5];
+        for (int i = 0; i <= 4; i++){
+            for (int j = 0; j <= 4; j++){
+
+                colourMatrix[i][j] =
+                        image.getPixelReader().getColor(i, j);
+            }
+        }
+        return colourMatrix;
+    }
+
+    private static Color getAdjustedColour(Color[][] colourMatrix){
+        double newRed = 0;
+        double newBlue = 0;
+        double newGreen = 0;
+
+        for (int i = 0; i < 4; i++){
+            for (int j = 0; j < 4; j++){
+                newRed += (laplacianMatrix[i][j] * colourMatrix[i][j].getRed());
+                newGreen += (laplacianMatrix[i][j] * colourMatrix[i][j].getGreen());
+                newBlue += (laplacianMatrix[i][j] * colourMatrix[i][j].getGreen());
+            }
+        }
+
+        newRed = Math.min(255, Math.max(0, newRed));
+        newBlue = Math.min(255, Math.max(0, newBlue));
+        newGreen = Math.min(255, Math.max(0, newGreen));
+
+        return Color.color(newRed/255, newBlue/255, newGreen/255);
+    }
 
 }

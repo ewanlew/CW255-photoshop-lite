@@ -5,6 +5,7 @@
  */
 package me.ewanl.cw255;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -90,7 +91,6 @@ public class PhotoshopController {
                 imgView.setImage(Photoshop.resizeImage(Photoshop.gammaCorrect(originalImage),
                         sldScale.getValue(), rdoNearestNeighbour.isSelected()));
             }
-
         });
 
         sldScale.valueProperty().addListener((observableValue, oldVal, newVal) -> {
@@ -104,11 +104,19 @@ public class PhotoshopController {
                 imgView.setImage(Photoshop.resizeImage(Photoshop.gammaCorrect(originalImage),
                         sldScale.getValue(), rdoNearestNeighbour.isSelected()));
             }
-
-
         });
 
+        chkCrossCorrelation.setOnAction(this::updateCrossCorrelation);
+
         btnReset.setOnAction(event -> reset());
+    }
+
+    private void updateCrossCorrelation(ActionEvent actionEvent) {
+        if (chkCrossCorrelation.isSelected()){
+            imgView.setImage(Photoshop.applyLaplace(originalImage));
+        } else {
+
+        }
     }
 
     private void reset(){
