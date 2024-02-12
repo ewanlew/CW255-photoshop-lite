@@ -146,53 +146,98 @@ public class Photoshop extends Application {
         int newWidth = (int) imageToChange.getWidth();
         int newHeight = (int) imageToChange.getHeight();
 
-        WritableImage filteredImage = new WritableImage(newWidth, newHeight);
+        double maxRed = Integer.MIN_VALUE;
+        double maxGreen = Integer.MIN_VALUE;
+        double maxBlue = Integer.MIN_VALUE;
+
+        double minRed = Integer.MAX_VALUE;
+        double minGreen = Integer.MAX_VALUE;
+        double minBlue = Integer.MAX_VALUE;
+
+        FauxColor[][] bigColours = new FauxColor[newWidth-4][newWidth-4];
+
+        WritableImage filteredImage = new WritableImage(newWidth-4, newHeight-4);
         PixelWriter writeableImage = filteredImage.getPixelWriter();
 
         for (int j = 2; j < newHeight - 2 ; j++){
             for (int i = 2; i < newWidth - 2; i++){
-                Color[][] colorMatrix = getColourMatrix(imageToChange);
-                Color newColor = getAdjustedColour(colorMatrix);
+                // 0r, 1g, 2b
+                double[] colorVals = getTotalColours(imageToChange, i, j);
+                FauxColor pixelVals = new FauxColor(
+                        (int) colorVals[0],
+                        (int) colorVals[1],
+                        (int) colorVals[2]
+                );
+
+                if (pixelVals.getR() < minRed) {
+                    minRed = pixelVals.getR();
+                }
+
+                if (pixelVals.getR() > maxRed){
+                    maxRed = pixelVals.getR();
+                }
+
+                if (pixelVals.getG() < minGreen){
+                    minGreen = pixelVals.getG();
+                }
+
+                if (pixelVals.getG() > maxGreen){
+                    maxGreen = pixelVals.getG();
+                }
+
+                if (pixelVals.getB() < minBlue){
+                    minBlue = pixelVals.getB();
+                }
+
+                if (pixelVals.getB() > maxBlue){
+                    maxBlue = pixelVals.getB();
+                }
+
+                bigColours[i-2][j-2] = pixelVals;
 
 
-                writeableImage.setColor(i, j, newColor);
 
             }
         }
+
+        for (int i = 0; i < newWidth -4; i++){
+            for (int j = 0; j < newHeight -4; j++){
+                int redVal = (int) ((bigColours[i][j].getR() - minRed) * (255/(maxRed-minRed)));
+                int greenVal = (int) ((bigColours[i][j].getG() - minGreen) * (255/(maxGreen-minGreen)));
+                int blueVal = (int) ((bigColours[i][j].getB() - minBlue) * (255/(maxBlue-minBlue)));
+                writeableImage.setColor(i, j, Color.rgb(redVal, greenVal, blueVal));
+            }
+        }
+//                writeableImage.setColor(i, j, newColor);
 
         return filteredImage;
     }
 
-    private static Color[][] getColourMatrix(Image image){
-        Color[][] colourMatrix = new Color[5][5];
-        for (int i = 0; i <= 4; i++){
-            for (int j = 0; j <= 4; j++){
-
-                colourMatrix[i][j] =
-                        image.getPixelReader().getColor(i, j);
+    private static double[] getTotalColours(Image image, int x, int y){
+        double colorVals[] = new double[3];
+        for (int i = -2; i <= 2; i++){
+            for (int j = -2; j <= 2; j++){
+                colorVals[0] += (image.getPixelReader().getColor(i+x, j+y).getRed() * laplacianMatrix[i+2][j+2]);
+                colorVals[1] += (image.getPixelReader().getColor(i+x, j+y).getGreen() * laplacianMatrix[i+2][j+2]);
+                colorVals[2] += (image.getPixelReader().getColor(i+x, j+y).getBlue() * laplacianMatrix[i+2][j+2]);
             }
         }
-        return colourMatrix;
+        return colorVals;
     }
 
     private static Color getAdjustedColour(Color[][] colourMatrix){
-        double newRed = 0;
-        double newBlue = 0;
-        double newGreen = 0;
 
+        // matrix for colour values to be stored into
+        int[][][] adjustMatrix = new int[4][4][2];
+
+        // loops through colourmatrix, adding each individual colour value to 3d array
         for (int i = 0; i < 4; i++){
             for (int j = 0; j < 4; j++){
-                newRed += (laplacianMatrix[i][j] * colourMatrix[i][j].getRed());
-                newGreen += (laplacianMatrix[i][j] * colourMatrix[i][j].getGreen());
-                newBlue += (laplacianMatrix[i][j] * colourMatrix[i][j].getGreen());
+
             }
         }
 
-        newRed = Math.min(255, Math.max(0, newRed));
-        newBlue = Math.min(255, Math.max(0, newBlue));
-        newGreen = Math.min(255, Math.max(0, newGreen));
-
-        return Color.color(newRed/255, newBlue/255, newGreen/255);
+        return Color.rgb(1,1,1);
     }
 
 }
