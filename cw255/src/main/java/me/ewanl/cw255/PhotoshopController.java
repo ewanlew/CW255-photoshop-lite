@@ -65,6 +65,7 @@ public class PhotoshopController {
     public ImageView imgView;
 
     private Image originalImage;
+    private Image laplacianImage;
 
     /**
      * Initialises listeners for all objects in the scene
@@ -85,11 +86,20 @@ public class PhotoshopController {
 
             Photoshop.setGammaLUT(gammaVal);
 
-            if (sldScale.getValue() == 1){
-                imgView.setImage(Photoshop.gammaCorrect(originalImage));
-            } else{
-                imgView.setImage(Photoshop.resizeImage(Photoshop.gammaCorrect(originalImage),
-                        sldScale.getValue(), rdoNearestNeighbour.isSelected()));
+            if (chkCrossCorrelation.isSelected()) {
+                if (sldScale.getValue() == 1) {
+                    imgView.setImage(Photoshop.gammaCorrect(laplacianImage));
+                } else {
+                    imgView.setImage(Photoshop.resizeImage(Photoshop.gammaCorrect(laplacianImage),
+                            sldScale.getValue(), rdoNearestNeighbour.isSelected()));
+                }
+            } else {
+                if (sldScale.getValue() == 1) {
+                    imgView.setImage(Photoshop.gammaCorrect(originalImage));
+                } else {
+                    imgView.setImage(Photoshop.resizeImage(Photoshop.gammaCorrect(originalImage),
+                            sldScale.getValue(), rdoNearestNeighbour.isSelected()));
+                }
             }
         });
 
@@ -97,23 +107,36 @@ public class PhotoshopController {
             double scaleVal = newVal.doubleValue();
             lblScaleValue.setText(df.format(scaleVal));
 
-            if (sldGamma.getValue() == 1){
-                imgView.setImage(Photoshop.resizeImage(originalImage,
-                        scaleVal, rdoNearestNeighbour.isSelected()));
-            } else{
-                imgView.setImage(Photoshop.resizeImage(Photoshop.gammaCorrect(originalImage),
-                        sldScale.getValue(), rdoNearestNeighbour.isSelected()));
+            if (chkCrossCorrelation.isSelected()) {
+                if (sldGamma.getValue() == 1) {
+                    imgView.setImage(Photoshop.resizeImage(laplacianImage,
+                            scaleVal, rdoNearestNeighbour.isSelected()));
+                } else {
+                    imgView.setImage(Photoshop.resizeImage(Photoshop.gammaCorrect(laplacianImage),
+                            sldScale.getValue(), rdoNearestNeighbour.isSelected()));
+                }
+            } else {
+                if (sldGamma.getValue() == 1){
+                    imgView.setImage(Photoshop.resizeImage(originalImage,
+                            scaleVal, rdoNearestNeighbour.isSelected()));
+                } else{
+                    imgView.setImage(Photoshop.resizeImage(Photoshop.gammaCorrect(originalImage),
+                            sldScale.getValue(), rdoNearestNeighbour.isSelected()));
+                }
             }
         });
 
         chkCrossCorrelation.setOnAction(this::updateCrossCorrelation);
+        laplacianImage = Photoshop.applyLaplace(originalImage);
 
         btnReset.setOnAction(event -> reset());
     }
 
     private void updateCrossCorrelation(ActionEvent actionEvent) {
         if (chkCrossCorrelation.isSelected()){
-            imgView.setImage(Photoshop.applyLaplace(originalImage));
+            if (sldGamma.getValue() == 1){
+                
+            }
         } else {
 
         }
