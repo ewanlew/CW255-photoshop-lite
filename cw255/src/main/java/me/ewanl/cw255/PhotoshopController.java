@@ -66,6 +66,8 @@ public class PhotoshopController {
 
     private Image originalImage;
     private Image laplacianImage;
+    private double currentGamma = 1;
+    private double currentScale = 1;
 
     /**
      * Initialises listeners for all objects in the scene
@@ -79,9 +81,11 @@ public class PhotoshopController {
         }
 
         DecimalFormat df = new DecimalFormat("0.000");
+        Photoshop.setGammaLUT(1);
 
         sldGamma.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             double gammaVal = newVal.doubleValue();
+            currentGamma = gammaVal;
             lblGammaValue.setText(df.format(gammaVal));
 
             Photoshop.setGammaLUT(gammaVal);
@@ -105,6 +109,7 @@ public class PhotoshopController {
 
         sldScale.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             double scaleVal = newVal.doubleValue();
+            currentScale = scaleVal;
             lblScaleValue.setText(df.format(scaleVal));
 
             if (chkCrossCorrelation.isSelected()) {
@@ -135,10 +140,22 @@ public class PhotoshopController {
     private void updateCrossCorrelation(ActionEvent actionEvent) {
         if (chkCrossCorrelation.isSelected()){
             if (sldGamma.getValue() == 1){
-                
+                if (sldScale.getValue() == 1){
+                    imgView.setImage(laplacianImage);
+                }
+                else {
+                    imgView.setImage(Photoshop.resizeImage(laplacianImage, currentScale, rdoNearestNeighbour.isSelected()));
+                }
+            } else {
+                if (sldScale.getValue() == 1){
+                    imgView.setImage(Photoshop.gammaCorrect(laplacianImage));
+                }
+                else {
+                    imgView.setImage(Photoshop.gammaCorrect(Photoshop.resizeImage(laplacianImage, currentScale, rdoNearestNeighbour.isSelected())));
+                }
             }
         } else {
-
+            imgView.setImage(Photoshop.gammaCorrect(Photoshop.resizeImage(originalImage, currentScale, rdoNearestNeighbour.isSelected())));
         }
     }
 
