@@ -156,68 +156,82 @@ public class Photoshop extends Application {
 
             // BILINEAR:
 
+
+            // Calculate scaling factors for X and Y dimensions
             double xFactor = (double) width / (double) newWidth;
             double yFactor = (double) height / (double) newHeight;
 
-            // coordinates of source points
+            // Vars for interpolation calculations
             double  ox, oy, dx1, dy1, dx2, dy2;
             int     ox1, oy1, ox2, oy2;
 
-            // width and height decreased by 1
-            int iMax = height - 1;
-            int jMax = width - 1;
+            // Maximum valid indices for original image
+            int yMax = height - 1;
+            int xMax = width - 1;
 
-            // temporary values
+            // Temp variables for pixel access
             int tempPointer1, tempPointer2;
             int pointer1, pointer2, pointer3, pointer4;
 
+            // Loop through each image in new image
             for (int i = 0; i < newHeight; i++){
-                // Y coordinates
+
+                // Calculate Y co-ord in original image
                 oy  = (double) i * yFactor;
                 oy1 = (int) oy;
-                oy2 = ( oy1 == iMax ) ? oy1 : oy1 + 1;
+                oy2 = ( oy1 == yMax ) ? oy1 : oy1 + 1; // Adjust for boundary condition
                 dy1 = oy - (double) oy1;
                 dy2 = 1.0 - dy1;
 
-                // get temp pointers
+                // Set temporary pointers for Y-axis interpolation
                 tempPointer1 = oy1;
                 tempPointer2 = oy2;
 
+                // Loop through each column in new image
                 for (int j = 0; j < newWidth; j++){
-                    // X coordinates
+
+                    // Calculate X co-ord in original image
                     ox  = (double) j * xFactor;
                     ox1 = (int) ox;
-                    ox2 = ( ox1 == jMax ) ? ox1 : ox1 + 1;
+                    ox2 = ( ox1 == xMax ) ? ox1 : ox1 + 1; // Adjust for boundary condition
                     dx1 = ox - (double) ox1;
                     dx2 = 1.0 - dx1;
 
-                    pointer1 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer1).getRed()*255;
-                    pointer2 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer1).getRed()*255;
-                    pointer3 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer2).getRed()*255;
-                    pointer4 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer2).getRed()*255;
+                    // Bilinear interpolation for red channel
+                    pointer1 = (int) (imageToChange.getPixelReader().getColor(ox1, tempPointer1).getRed() * 255);
+                    pointer2 = (int) (imageToChange.getPixelReader().getColor(ox2, tempPointer1).getRed() * 255);
+                    pointer3 = (int) (imageToChange.getPixelReader().getColor(ox1, tempPointer2).getRed() * 255);
+                    pointer4 = (int) (imageToChange.getPixelReader().getColor(ox2, tempPointer2).getRed() * 255);
 
-                    int r = (int)(
-                            dy2 * ( dx2 * ( pointer1 ) + dx1 * ( pointer2 ) ) +
-                                    dy1 * ( dx2 * ( pointer3 ) + dx1 * ( pointer4 ) ) );
+                    int r = (int) (
+                            dy2 * (dx2 * pointer1 + dx1 * pointer2) +
+                                    dy1 * (dx2 * pointer3 + dx1 * pointer4) + 0.5 // Rounding to the nearest integer
+                    );
 
-                    pointer1 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer1).getGreen()*255;
-                    pointer2 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer1).getGreen()*255;
-                    pointer3 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer2).getGreen()*255;
-                    pointer4 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer2).getGreen()*255;
+                    // Bilinear interpolation for green channel
+                    pointer1 = (int) (imageToChange.getPixelReader().getColor(ox1, tempPointer1).getGreen() * 255);
+                    pointer2 = (int) (imageToChange.getPixelReader().getColor(ox2, tempPointer1).getGreen() * 255);
+                    pointer3 = (int) (imageToChange.getPixelReader().getColor(ox1, tempPointer2).getGreen() * 255);
+                    pointer4 = (int) (imageToChange.getPixelReader().getColor(ox2, tempPointer2).getGreen() * 255);
 
-                    int g = (int)(
-                            dy2 * ( dx2 * ( pointer1 ) + dx1 * ( pointer2 ) ) +
-                                    dy1 * ( dx2 * ( pointer3 ) + dx1 * ( pointer4 ) ) );
+                    int g = (int) (
+                            dy2 * (dx2 * pointer1 + dx1 * pointer2) +
+                                    dy1 * (dx2 * pointer3 + dx1 * pointer4) + 0.5 // Rounding to the nearest integer
+                    );
 
-                    pointer1 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer1).getBlue()*255;
-                    pointer2 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer1).getBlue()*255;
-                    pointer3 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer2).getBlue()*255;
-                    pointer4 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer2).getBlue()*255;
 
-                    int b = (int)(
-                            dy2 * ( dx2 * ( pointer1 ) + dx1 * ( pointer2 ) ) +
-                                    dy1 * ( dx2 * ( pointer3 ) + dx1 * ( pointer4 ) ) );
+                    // Bilinear interpolation for blue channel
+                    pointer1 = (int) (imageToChange.getPixelReader().getColor(ox1, tempPointer1).getBlue() * 255);
+                    pointer2 = (int) (imageToChange.getPixelReader().getColor(ox2, tempPointer1).getBlue() * 255);
+                    pointer3 = (int) (imageToChange.getPixelReader().getColor(ox1, tempPointer2).getBlue() * 255);
+                    pointer4 = (int) (imageToChange.getPixelReader().getColor(ox2, tempPointer2).getBlue() * 255);
 
+                    int b = (int) (
+                            dy2 * (dx2 * pointer1 + dx1 * pointer2) +
+                                    dy1 * (dx2 * pointer3 + dx1 * pointer4) + 0.5 // Rounding to the nearest integer
+                    );
+
+                    // Set calculated rgb values to new image
                     writeableImage.setColor(j, i, Color.rgb(r, g, b));
                 }
             }
