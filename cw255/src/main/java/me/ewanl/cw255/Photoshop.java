@@ -114,9 +114,12 @@ public class Photoshop extends Application {
      */
     public static Image resizeImage(Image imageToChange, double resizeScale, boolean nn) {
 
+        int width = (int) imageToChange.getWidth();
+        int height = (int) imageToChange.getHeight();
+
         // New width & height of resized image
-        int newWidth = (int) ((double) imageToChange.getWidth() * resizeScale);
-        int newHeight = (int) ((double) imageToChange.getHeight() * resizeScale);
+        int newWidth = (int) (imageToChange.getWidth() * resizeScale);
+        int newHeight = (int) (imageToChange.getHeight() * resizeScale);
 
         // Create a new WritableImage
         WritableImage resizedImage = new WritableImage(newWidth, newHeight);
@@ -125,24 +128,97 @@ public class Photoshop extends Application {
         // Colour of pixel being adjusted
         Color colour;
 
-        if (resizeScale > 0) {
-            // Loops through all rows & columns of image of new dimensions
-            for (int j = 0; j < newHeight; j++) {
-                for (int i = 0; i < newWidth; i++) {
+        if (nn) {
 
-                    // Finds pixel within original image, that will be used in the new image
-                    double x = (double) imageToChange.getWidth() * (double) i / (double) newWidth;
-                    double y = (double) imageToChange.getHeight() * (double) j / (double) newHeight;
+            // NEAREST-NEIGHBOUR:
 
-                    // Adjusts them to be integers, to actually be playable onto new image
-                    int ix = (int) x;
-                    int iy = (int) y;
+            if (resizeScale > 0.5) {
+                // Loops through all rows & columns of image of new dimensions
+                for (int j = 0; j < newHeight; j++) {
+                    for (int i = 0; i < newWidth; i++) {
 
-                    // Sets new colour, and writes to new image
-                    colour = imageToChange.getPixelReader().getColor(ix, iy);
-                    writeableImage.setColor(i, j, colour);
+                        // Finds pixel within original image, that will be used in the new image
+                        double x = imageToChange.getWidth() * (double) i / (double) newWidth;
+                        double y = imageToChange.getHeight() * (double) j / (double) newHeight;
+
+                        // Adjusts them to be integers, to actually be playable onto new image
+                        int ix = (int) x;
+                        int iy = (int) y;
+
+                        // Sets new colour, and writes to new image
+                        colour = imageToChange.getPixelReader().getColor(ix, iy);
+                        writeableImage.setColor(i, j, colour);
+                    }
                 }
             }
+
+        } else {
+
+            // BILINEAR:
+
+            double xScaleFactor = (double) width / (double) newWidth;
+            double yScaleFactor = (double) height / (double) newHeight;
+
+            double ox, oy, dx1, dy1, dx2, dy2;
+            int ox1, oy1, ox2, oy2;
+
+            int xMax = width-1;
+            int yMax = height-1;
+
+            int tempPoint1, tempPoint2;
+            double point1, point2, point3, point4;
+
+            for (int i = 0; i < newHeight; i++){
+                oy = (double) i * xScaleFactor;
+                oy1 = (int) oy;
+                oy2 = (oy == yMax) ? oy1 : oy1 + 1;
+                dy1 = oy - (double) oy1;
+                dy2 = 1.0 - dy1;
+
+                tempPoint1 = oy1;
+                tempPoint2 = oy2;
+
+                for (int j = 0; j < newWidth; j++){
+                    ox = (double) j * yScaleFactor;
+                    ox1 = (int) ox;
+                    ox2 = (ox1 == xMax) ? ox1 : ox1 + 1;
+                    dx1 = ox - (double) ox1;
+                    dx2 = 1.0 - dx1;
+
+                    point1 = imageToChange.getPixelReader().getColor(ox1, tempPoint1).getRed();
+                    point2 = imageToChange.getPixelReader().getColor(ox2, tempPoint1).getRed();
+                    point3 = imageToChange.getPixelReader().getColor(ox1, tempPoint2).getRed();
+                    point4 = imageToChange.getPixelReader().getColor(ox2, tempPoint2).getRed();
+
+                    int r = (int) (
+                                    dy2 * (dx2 * (point1) + dx1 * (point2)) +
+                                    dy1 * (dx2 * (point3) + dx1 * (point4))
+                            );
+
+                    point1 = imageToChange.getPixelReader().getColor(ox1, tempPoint1).getGreen();
+                    point2 = imageToChange.getPixelReader().getColor(ox2, tempPoint1).getGreen();
+                    point3 = imageToChange.getPixelReader().getColor(ox1, tempPoint2).getGreen();
+                    point4 = imageToChange.getPixelReader().getColor(ox2, tempPoint2).getGreen();
+
+                    int g = (int) (
+                            dy2 * (dx2 * (point1) + dx1 * (point2)) +
+                                    dy1 * (dx2 * (point3) + dx1 * (point4))
+                    );
+
+                    point1 = imageToChange.getPixelReader().getColor(ox1, tempPoint1).getBlue();
+                    point2 = imageToChange.getPixelReader().getColor(ox2, tempPoint1).getBlue();
+                    point3 = imageToChange.getPixelReader().getColor(ox1, tempPoint2).getBlue();
+                    point4 = imageToChange.getPixelReader().getColor(ox2, tempPoint2).getBlue();
+
+                    int b = (int) (
+                            dy2 * (dx2 * (point1) + dx1 * (point2)) +
+                                    dy1 * (dx2 * (point3) + dx1 * (point4))
+                    );
+
+                    writeableImage.setColor(j, i, Color.rgb(r, g, b));
+                }
+            }
+
         }
 
         // Returns full resized image
@@ -168,7 +244,7 @@ public class Photoshop extends Application {
         double minGreen = Integer.MAX_VALUE;
         double minBlue = Integer.MAX_VALUE;
 
-        // Array of all of the raw values of the filter, before being normalised
+        // Array of all the raw values of the filter, before being normalised
         FauxColor[][] bigColours = new FauxColor[newWidth - 4][newWidth - 4];
 
         // Image being returned and to wrote to later
@@ -215,6 +291,7 @@ public class Photoshop extends Application {
                     maxBlue = pixelVals.getB();
                 }
 
+                //
                 bigColours[i - 2][j - 2] = pixelVals;
             }
         }
@@ -244,9 +321,14 @@ public class Photoshop extends Application {
      * @return List of raw rgb filtered values
      */
     private static double[] getTotalColours(Image image, int x, int y) {
+        //
         double colorVals[] = new double[3];
+
+        // Loops through all surrounding (and including) target pixel
         for (int i = -2; i <= 2; i++) {
             for (int j = -2; j <= 2; j++) {
+
+                // Applies Laplacian filter to the colour, and adds to the value
                 colorVals[0] += (image.getPixelReader().getColor(i + x, j + y).getRed() * laplacianMatrix[i + 2][j + 2]);
                 colorVals[1] += (image.getPixelReader().getColor(i + x, j + y).getGreen() * laplacianMatrix[i + 2][j + 2]);
                 colorVals[2] += (image.getPixelReader().getColor(i + x, j + y).getBlue() * laplacianMatrix[i + 2][j + 2]);
