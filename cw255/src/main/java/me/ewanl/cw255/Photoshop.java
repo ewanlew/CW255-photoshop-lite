@@ -156,64 +156,67 @@ public class Photoshop extends Application {
 
             // BILINEAR:
 
-            double xScaleFactor = (double) width / (double) newWidth;
-            double yScaleFactor = (double) height / (double) newHeight;
+            double xFactor = (double) width / (double) newWidth;
+            double yFactor = (double) height / (double) newHeight;
 
-            double ox, oy, dx1, dy1, dx2, dy2;
-            int ox1, oy1, ox2, oy2;
+            // coordinates of source points
+            double  ox, oy, dx1, dy1, dx2, dy2;
+            int     ox1, oy1, ox2, oy2;
 
-            int xMax = width-1;
-            int yMax = height-1;
+            // width and height decreased by 1
+            int iMax = height - 1;
+            int jMax = width - 1;
 
-            int tempPoint1, tempPoint2;
-            double point1, point2, point3, point4;
+            // temporary values
+            int tempPointer1, tempPointer2;
+            int pointer1, pointer2, pointer3, pointer4;
 
             for (int i = 0; i < newHeight; i++){
-                oy = (double) i * xScaleFactor;
+                // Y coordinates
+                oy  = (double) i * yFactor;
                 oy1 = (int) oy;
-                oy2 = (oy == yMax) ? oy1 : oy1 + 1;
+                oy2 = ( oy1 == iMax ) ? oy1 : oy1 + 1;
                 dy1 = oy - (double) oy1;
                 dy2 = 1.0 - dy1;
 
-                tempPoint1 = oy1;
-                tempPoint2 = oy2;
+                // get temp pointers
+                tempPointer1 = oy1;
+                tempPointer2 = oy2;
 
                 for (int j = 0; j < newWidth; j++){
-                    ox = (double) j * yScaleFactor;
+                    // X coordinates
+                    ox  = (double) j * xFactor;
                     ox1 = (int) ox;
-                    ox2 = (ox1 == xMax) ? ox1 : ox1 + 1;
+                    ox2 = ( ox1 == jMax ) ? ox1 : ox1 + 1;
                     dx1 = ox - (double) ox1;
                     dx2 = 1.0 - dx1;
 
-                    point1 = imageToChange.getPixelReader().getColor(ox1, tempPoint1).getRed();
-                    point2 = imageToChange.getPixelReader().getColor(ox2, tempPoint1).getRed();
-                    point3 = imageToChange.getPixelReader().getColor(ox1, tempPoint2).getRed();
-                    point4 = imageToChange.getPixelReader().getColor(ox2, tempPoint2).getRed();
+                    pointer1 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer1).getRed()*255;
+                    pointer2 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer1).getRed()*255;
+                    pointer3 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer2).getRed()*255;
+                    pointer4 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer2).getRed()*255;
 
-                    int r = (int) (
-                                    dy2 * (dx2 * (point1) + dx1 * (point2)) +
-                                    dy1 * (dx2 * (point3) + dx1 * (point4))
-                            );
+                    int r = (int)(
+                            dy2 * ( dx2 * ( pointer1 ) + dx1 * ( pointer2 ) ) +
+                                    dy1 * ( dx2 * ( pointer3 ) + dx1 * ( pointer4 ) ) );
 
-                    point1 = imageToChange.getPixelReader().getColor(ox1, tempPoint1).getGreen();
-                    point2 = imageToChange.getPixelReader().getColor(ox2, tempPoint1).getGreen();
-                    point3 = imageToChange.getPixelReader().getColor(ox1, tempPoint2).getGreen();
-                    point4 = imageToChange.getPixelReader().getColor(ox2, tempPoint2).getGreen();
+                    pointer1 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer1).getGreen()*255;
+                    pointer2 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer1).getGreen()*255;
+                    pointer3 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer2).getGreen()*255;
+                    pointer4 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer2).getGreen()*255;
 
-                    int g = (int) (
-                            dy2 * (dx2 * (point1) + dx1 * (point2)) +
-                                    dy1 * (dx2 * (point3) + dx1 * (point4))
-                    );
+                    int g = (int)(
+                            dy2 * ( dx2 * ( pointer1 ) + dx1 * ( pointer2 ) ) +
+                                    dy1 * ( dx2 * ( pointer3 ) + dx1 * ( pointer4 ) ) );
 
-                    point1 = imageToChange.getPixelReader().getColor(ox1, tempPoint1).getBlue();
-                    point2 = imageToChange.getPixelReader().getColor(ox2, tempPoint1).getBlue();
-                    point3 = imageToChange.getPixelReader().getColor(ox1, tempPoint2).getBlue();
-                    point4 = imageToChange.getPixelReader().getColor(ox2, tempPoint2).getBlue();
+                    pointer1 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer1).getBlue()*255;
+                    pointer2 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer1).getBlue()*255;
+                    pointer3 = (int) imageToChange.getPixelReader().getColor(ox1, tempPointer2).getBlue()*255;
+                    pointer4 = (int) imageToChange.getPixelReader().getColor(ox2, tempPointer2).getBlue()*255;
 
-                    int b = (int) (
-                            dy2 * (dx2 * (point1) + dx1 * (point2)) +
-                                    dy1 * (dx2 * (point3) + dx1 * (point4))
-                    );
+                    int b = (int)(
+                            dy2 * ( dx2 * ( pointer1 ) + dx1 * ( pointer2 ) ) +
+                                    dy1 * ( dx2 * ( pointer3 ) + dx1 * ( pointer4 ) ) );
 
                     writeableImage.setColor(j, i, Color.rgb(r, g, b));
                 }
