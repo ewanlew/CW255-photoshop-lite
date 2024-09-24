@@ -16,6 +16,6 @@ The aim is to natively implement functions to apply the following transformation
 
 <img src="https://github.com/user-attachments/assets/77d1a3ad-9022-4856-b21f-85bbf5fd5d75" width="700" alt="Application in use, showing the functions">
 
-This project was created using:
+Project was created using:
   - Java 21
   - OpenJFX JavaFX 21-ea+24 
